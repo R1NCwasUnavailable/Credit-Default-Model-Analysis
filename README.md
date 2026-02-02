@@ -21,8 +21,11 @@ A comprehensive machine learning analysis to predict credit card default using t
 ## 🚀 Project Structure
 
 ```
-├── data/               # Dataset storage (raw/processed)
-├── notebooks/          # Exploratory analysis and prototyping
+├── data/               # Dataset storage
+│   ├── raw/            # Original UCI dataset
+│   └── processed/      # Cleaned & split CSVs (X_train, y_train, etc.)
+├── notebooks/          # Exploratory analysis
+│   └── 01_EDA_and_Modeling.ipynb # Interactive EDA and modeling demo
 ├── reports/            # Generated figures, CSVs, and final analysis
 │   ├── figures/        # Confusion matrices and plots
 │   └── final_report.md # Detailed research analysis
@@ -56,6 +59,12 @@ A comprehensive machine learning analysis to predict credit card default using t
 
 4.  **View Results**
     Check the `reports/` directory for the `model_comparison.csv` and generated plots.
+
+5.  **Interactive Exploration**
+    Open the Jupyter Notebook to explore data distributions and run quick experiments:
+    ```bash
+    jupyter notebook notebooks/01_EDA_and_Modeling.ipynb
+    ```
 
 ## 📈 Visualizations
 

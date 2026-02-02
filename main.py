@@ -19,6 +19,19 @@ def main():
     X_train, X_test, y_train, y_test = preprocess_data(df)
     print(f"Train size: {X_train.shape}, Test size: {X_test.shape}")
     
+    # Save processed data
+    print("Saving processed data...")
+    if not os.path.exists('data/processed'):
+        os.makedirs('data/processed')
+    
+    X_train_df = pd.DataFrame(X_train, columns=df.drop(columns=['default payment next month']).columns)
+    X_test_df = pd.DataFrame(X_test, columns=df.drop(columns=['default payment next month']).columns)
+    
+    X_train_df.to_csv('data/processed/X_train.csv', index=False)
+    X_test_df.to_csv('data/processed/X_test.csv', index=False)
+    y_train.to_csv('data/processed/y_train.csv', index=False)
+    y_test.to_csv('data/processed/y_test.csv', index=False)
+    
     # 3. Define Models
     baseline = get_baseline_models()
     nonlinear = get_nonlinear_models()

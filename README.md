@@ -8,15 +8,27 @@ A comprehensive machine learning analysis to predict credit card default using t
 
 ## 📊 Key Results
 
-After incorporating and tuning advanced ensemble models, Gradient Boosted Trees consistently dominated the classic baseline models. Here are the top performers by ROC-AUC on the test set:
+After incorporating and tuning advanced ensemble models, Gradient Boosted Trees consistently dominated the classic baseline models. Here are the comprehensive evaluation metrics for all 17 models on the test set, sorted by ROC-AUC:
 
-| Model | Accuracy | F1-Score | ROC-AUC |
-| :--- | :--- | :--- | :--- |
-| **Gradient Boosting** | 81.71% | 0.462 | **0.7785** |
-| **XGBoost** | 81.85% | 0.464 | **0.7775** |
-| **CatBoost** | 76.36% | **0.538** | **0.7767** |
-| **LightGBM** | 75.75% | 0.530 | 0.7767 |
-| **Random Forest** | 78.73% | 0.543 | 0.7757 |
+| Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Gradient Boosting** | 81.72% | 0.6615 | 0.3549 | 0.4620 | **0.7785** |
+| **XGBoost** | 81.85% | 0.6686 | 0.3557 | 0.4643 | **0.7775** |
+| **CatBoost** | 76.37% | 0.4739 | **0.6217** | 0.5378 | **0.7767** |
+| **LightGBM** | 75.75% | 0.4638 | 0.6172 | 0.5296 | **0.7767** |
+| **Random Forest** | 78.73% | 0.5174 | 0.5720 | **0.5433** | 0.7757 |
+| **AdaBoost** | 81.72% | 0.6753 | 0.3338 | 0.4468 | 0.7685 |
+| **Extra Trees** | 80.95% | 0.6207 | 0.3564 | 0.4528 | 0.7523 |
+| **Stacking Classifier** | 76.10% | 0.4665 | 0.5622 | 0.5099 | 0.7486 |
+| **SVM** | 77.97% | 0.5018 | 0.5373 | 0.5189 | 0.7419 |
+| **Gaussian NB** | 75.18% | 0.4504 | 0.5539 | 0.4968 | 0.7248 |
+| **Voting Classifier** | 76.62% | 0.4650 | 0.3806 | 0.4186 | 0.7122 |
+| **Logistic Regression** | 67.97% | 0.3672 | 0.6202 | 0.4613 | 0.7084 |
+| **Ridge Classifier** | 68.45% | 0.3708 | 0.6119 | 0.4618 | 0.7059 |
+| **LDA** | 80.90% | **0.6814** | 0.2562 | 0.3724 | 0.7020 |
+| **k-NN** | 79.27% | 0.5489 | 0.3512 | 0.4283 | 0.7017 |
+| **SGD Classifier** | 79.83% | 0.5569 | 0.4318 | 0.4864 | 0.7013 |
+| **Decision Tree** | 72.88% | 0.3867 | 0.3858 | 0.3863 | 0.6059 |
 
 > **Insight**: While Gradient Boosting and XGBoost provide the best overall ranking capability (AUC), models like CatBoost, LightGBM, and Random Forest attained significantly higher F1-Scores. This indicates they successfully identified a much larger proportion of actual defaults (higher Recall) at the expense of false positives, making them exceptionally strong candidates for practical risk mitigation.
 

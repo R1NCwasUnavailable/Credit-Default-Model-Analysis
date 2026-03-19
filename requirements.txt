@@ -8,3 +8,6 @@ requests
 xlrd
 openpyxl
 jupyter
+xgboost
+lightgbm
+catboost

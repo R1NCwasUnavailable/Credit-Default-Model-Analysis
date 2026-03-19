@@ -1,9 +1,9 @@
 import pandas as pd
 import os
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from src.data_loader import load_data
 from src.preprocessing import preprocess_data
-from src.models import get_baseline_models, get_nonlinear_models, get_ensemble_models
+from src.models import get_baseline_models, get_nonlinear_models, get_ensemble_models, get_new_linear_models, get_new_ensemble_models, get_tuning_grids
 from src.evaluation import evaluate_model
 from src.visualization import plot_roc_curves, plot_confusion_matrices
 
@@ -36,8 +36,12 @@ def main():
     baseline = get_baseline_models()
     nonlinear = get_nonlinear_models()
     ensemble = get_ensemble_models(baseline, nonlinear)
+    new_linear = get_new_linear_models()
+    new_ensemble = get_new_ensemble_models()
     
-    all_models = {**baseline, **nonlinear, **ensemble}
+    tuning_grids = get_tuning_grids()
+    
+    all_models = {**baseline, **nonlinear, **ensemble, **new_linear, **new_ensemble}
     
     # 4. Train & Evaluate
     results = []
@@ -50,22 +54,45 @@ def main():
     for name, model in all_models.items():
         print(f" - Training {name}...")
         
-        # Optimization for time-consuming SVM models
-        # Voting Classifier also includes SVM so we subsample for it too if it's slow
-        if name in ['SVM', 'Voting Classifier'] and len(X_train) > 5000:
+        # Determine if we should subsample for speed
+        if name in ['SVM', 'Voting Classifier', 'Stacking Classifier'] and len(X_train) > 5000:
              print(f"   [Optimization] Subsampling training data for {name} to 5000 samples for speed...")
-             # Stratified subsample
-             X_sub, _, y_sub, _ = train_test_split(X_train, y_train, train_size=5000, stratify=y_train, random_state=42)
-             model.fit(X_sub, y_sub)
+             X_fit, _, y_fit, _ = train_test_split(X_train, y_train, train_size=5000, stratify=y_train, random_state=42)
         else:
-             model.fit(X_train, y_train)
+             X_fit, y_fit = X_train, y_train
         
+        if name in tuning_grids:
+             print(f"   [Tuning] Running RandomizedSearchCV for {name}...")
+             search = RandomizedSearchCV(
+                 estimator=model,
+                 param_distributions=tuning_grids[name],
+                 n_iter=10,
+                 cv=3,
+                 scoring='roc_auc',
+                 n_jobs=-1,
+                 random_state=42
+             )
+             search.fit(X_fit, y_fit)
+             print(f"   Best params: {search.best_params_}")
+             model = search.best_estimator_
+        else:
+             model.fit(X_fit, y_fit)
+        
+        # Evaluate model
         metrics = evaluate_model(model, X_test, y_test, name)
         results.append(metrics)
         print(f"   Done. ROC-AUC: {metrics['ROC-AUC']}")
 
+        # Save model reference back to all_models for visualization later
+        all_models[name] = model
+
     # 5. Compile Results
     results_df = pd.DataFrame(results)
+    # Sort by ROC-AUC if possible
+    try:
+        results_df = results_df.sort_values(by='ROC-AUC', ascending=False)
+    except:
+        pass
     print("\n--- Model Comparison ---")
     print(results_df)
     results_df.to_csv('reports/model_comparison.csv', index=False)

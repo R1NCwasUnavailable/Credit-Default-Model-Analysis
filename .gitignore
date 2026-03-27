@@ -148,3 +148,15 @@ cython_debug/
 
 # Temporary reports
 # reports/
+
+# Ignore local output data and models
+data/
+catboost_info/
+
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz

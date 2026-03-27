@@ -11,3 +11,4 @@ jupyter
 xgboost
 lightgbm
 catboost
+shap

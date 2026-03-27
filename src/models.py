@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier, AdaBoostClassifier, ExtraTreesClassifier, StackingClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
+from sklearn.neural_network import MLPClassifier
 import xgboost as xgb
 import lightgbm as lgb
 import catboost as cb
@@ -20,7 +20,8 @@ def get_nonlinear_models(random_state=42):
     return {
         'k-NN': KNeighborsClassifier(n_neighbors=5), # sensitive to scaling
         'Decision Tree': DecisionTreeClassifier(random_state=random_state, class_weight='balanced'),
-        'SVM': SVC(probability=True, random_state=random_state, class_weight='balanced') # probability for ROC-AUC
+        'SVM': SVC(probability=True, random_state=random_state, class_weight='balanced'), # probability for ROC-AUC
+        'Neural Network (MLP)': MLPClassifier(random_state=random_state, max_iter=500, early_stopping=True)
     }
 
 def get_ensemble_models(baseline_models, nonlinear_models, random_state=42):
@@ -90,5 +91,10 @@ def get_tuning_grids():
             'iterations': [50, 100, 200],
             'learning_rate': [0.01, 0.1, 0.2],
             'depth': [4, 6, 8]
+        },
+        'Neural Network (MLP)': {
+            'hidden_layer_sizes': [(50,), (100,), (50, 50)],
+            'activation': ['relu', 'tanh'],
+            'alpha': [0.0001, 0.001, 0.01]
         }
     }

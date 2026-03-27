@@ -35,6 +35,9 @@ def preprocess_data(df, target='default payment next month', test_size=0.2, rand
     # 1. Clean
     df_clean = clean_data(df)
     
+    # 1.5 One-Hot Encoding
+    df_clean = pd.get_dummies(df_clean, columns=['SEX', 'EDUCATION', 'MARRIAGE'], drop_first=True)
+    
     # 2. X, y
     X = df_clean.drop(columns=[target])
     y = df_clean[target]
@@ -60,7 +63,12 @@ def preprocess_data(df, target='default payment next month', test_size=0.2, rand
     X_train[scale_cols] = scaler.fit_transform(X_train[scale_cols])
     X_test[scale_cols] = scaler.transform(X_test[scale_cols])
     
-    return X_train, X_test, y_train, y_test
+    # 5. Handle Imbalance (SMOTE on training data only)
+    from imblearn.over_sampling import SMOTE
+    smote = SMOTE(random_state=random_state)
+    X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
+    
+    return X_train_res, X_test, y_train_res, y_test
 
 if __name__ == "__main__":
     from data_loader import load_data

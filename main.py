@@ -5,7 +5,7 @@ from src.data_loader import load_data
 from src.preprocessing import preprocess_data
 from src.models import get_baseline_models, get_nonlinear_models, get_ensemble_models, get_new_linear_models, get_new_ensemble_models, get_tuning_grids
 from src.evaluation import evaluate_model
-from src.visualization import plot_roc_curves, plot_confusion_matrices
+from src.visualization import plot_roc_curves, plot_confusion_matrices, plot_shap_values
 
 def main():
     # 1. Load Data
@@ -24,8 +24,8 @@ def main():
     if not os.path.exists('data/processed'):
         os.makedirs('data/processed')
     
-    X_train_df = pd.DataFrame(X_train, columns=df.drop(columns=['default payment next month']).columns)
-    X_test_df = pd.DataFrame(X_test, columns=df.drop(columns=['default payment next month']).columns)
+    X_train_df = pd.DataFrame(X_train)
+    X_test_df = pd.DataFrame(X_test)
     
     X_train_df.to_csv('data/processed/X_train.csv', index=False)
     X_test_df.to_csv('data/processed/X_test.csv', index=False)
@@ -67,7 +67,7 @@ def main():
                  estimator=model,
                  param_distributions=tuning_grids[name],
                  n_iter=10,
-                 cv=3,
+                 cv=5,
                  scoring='roc_auc',
                  n_jobs=-1,
                  random_state=42
@@ -101,6 +101,12 @@ def main():
     print("\nGenerating Plots...")
     plot_roc_curves(all_models, X_test, y_test, output_path='reports/roc_curves.png')
     plot_confusion_matrices(all_models, X_test, y_test, output_dir='reports/figures')
+    
+    # Generate SHAP for the best performing model
+    best_model_name = results_df.iloc[0]['Model']
+    best_model = all_models[best_model_name]
+    print(f"\nGenerating SHAP plots for the best model: {best_model_name}...")
+    plot_shap_values(best_model, X_test_df, best_model_name, output_dir='reports/figures')
     
     print("\nAnalysis Complete. Check 'reports/' for outputs.")
 

@@ -160,3 +160,8 @@ catboost_info/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+
+# Generated reports and figures
+reports/figures/
+reports/roc_curves.png
+reports/model_comparison.csv

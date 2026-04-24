@@ -163,5 +163,5 @@ catboost_info/
 
 # Generated reports and figures
 reports/figures/
-reports/roc_curves.png
+# reports/roc_curves.png
 reports/model_comparison.csv
